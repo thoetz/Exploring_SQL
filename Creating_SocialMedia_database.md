@@ -81,13 +81,88 @@ Step 6: Data Types and Attributes
 -	Decide on data types for attributes (e.g., strings for names and email, date/time for timestamps).
 -	Opt for the right data types to save space and enhance performance.
 
-Step 7: Refining and Optimizing
--	Remember, it's an iterative process.
--	Normalize the database to minimize redundancy.
--	Optimize queries for faster results.
--	Plan indexing strategies for quicker data retrieval.
+Step 7: Create DataBase in MY SQL
+```
+-- Creating and working with an instagram like data base
+CREATE DATABASE instagram_clone;
+USE instagram_clone;
 
-Step 8: Testing and Scaling
--	Testing is crucial for data consistency and accuracy.
--	Simulate real-world scenarios for issue spotting.
--	As the app grows, think about scaling techniques like partitioning
+-- Creating users table
+CREATE TABLE users (
+	id INT auto_increment PRIMARY KEY,
+    username VARCHAR(50) UNIQUE NOT NULL,
+    created_at TIMESTAMP DEFAULT NOW()
+    );
+DESC users;
+-- make sure our table works properly
+INSERT INTO users (username)
+	VALUES ('thomasjgoetz');
+SELECT * FROM users;
+-- Creating photos table
+CREATE TABLE photos (
+	id INT auto_increment PRIMARY KEY,
+    image_url VARCHAR(255) NOT NULL,
+    user_id INT NOT NULL,
+    created_at TIMESTAMP DEFAULT NOW(),
+    FOREIGN KEY(user_id) REFERENCES users(id)
+    );
+
+DESC photos;
+SHOW TABLES;
+
+-- Create our comments table and connect it to user and photo
+CREATE TABLE comments (
+		id INT auto_increment PRIMARY KEY,
+        comment_text VARCHAR (255) NOT NULL,
+        user_id INT NOT NULL,
+        photo_id INT NOT NULL, 
+        created_at TIMESTAMP DEFAULT NOW(),
+        FOREIGN KEY (user_id) REFERENCES users(id),
+        FOREIGN KEY (photo_id) REFERENCES photos(id)
+);
+-- Check it 
+DESC comments;
+
+-- Create likes table
+CREATE TABLE likes (
+    user_id INT NOT NULL, -- user who liked the photo
+    photo_id INT NOT NULL,
+    created_at TIMESTAMP DEFAULT NOW(),
+    FOREIGN KEY (user_id) REFERENCES users(id),
+	FOREIGN KEY (photo_id) REFERENCES photos(id),
+    PRIMARY KEY(user_id, photo_id) -- ensures no duplicate likes
+);
+DESC likes;
+
+-- Follows table
+-- followee will be the person being followed 
+-- follower will be the person doing the following
+CREATE TABLE follows (
+	follower_id INT NOT NULL,
+    followee_id INT NOT NULL,
+    created_at TIMESTAMP DEFAULT NOW(),
+    PRIMARY KEY(follower_id, followee_id),
+    FOREIGN KEY(follower_id) REFERENCES users(id),
+    FOREIGN KEY(followee_id) REFERENCES users(id)
+);
+DESC follows;
+-- Create hashtags tables using 2 tables to increase speed and allow for more flexibility later on when querying data and looking for insights on trends etc.
+-- tags table lets us do analysis on tags themselves when looking at trends
+CREATE TABLE tags (
+  id INTEGER AUTO_INCREMENT PRIMARY KEY,
+  tag_name VARCHAR(255) UNIQUE,
+  created_at TIMESTAMP DEFAULT NOW()
+);
+DESC tags;
+-- This photo_tags table associates a tag with a photo
+CREATE TABLE photo_tags (
+    photo_id INTEGER NOT NULL,
+    tag_id INTEGER NOT NULL,
+    FOREIGN KEY(photo_id) REFERENCES photos(id),
+    FOREIGN KEY(tag_id) REFERENCES tags(id),
+    PRIMARY KEY(photo_id, tag_id)
+);
+DESC photo_tags;
+show tables;
+```
+
