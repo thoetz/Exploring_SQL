@@ -1,4 +1,5 @@
-Creating our Instagram like database
+Creating our Instagram-like database
+
 Step 1: What do we need to store
 -	Photos 
 o	tags
@@ -8,7 +9,7 @@ o	tags
 -	Comments
 -	Followers
 -	Following
--	Step 2 a: Research – has anyone solved this problem before. Can you learn from their work and solutions to make your work faster and cleaner
+-	Step 2 a: Research – has anyone solved this problem before? Can you learn from their work and solutions to make your work faster and cleaner
 -	
 Step 2: Constraints
 -	Each profile can only like a photo once
@@ -18,7 +19,7 @@ Step 2: Constraints
 -	Cant follow yourself
 -	Can only follow somebody one time 
 
-Step 3: Table Design – Brainstorm potential idea of what each table might consist of and identify some primary and foreign keys. Might not add all these features if too complex. 
+Step 3: Table Design – Brainstorm potential ideas of what each table might consist of and identify some primary and foreign keys. Might not add all these features if too complex. 
 -	Create tables for Users, Photos, Likes, Comments, and Followers.
 -	Each table needs a primary key for uniqueness.
 -	Use foreign keys to link tables for data consistency.
@@ -61,9 +62,9 @@ Step 3: Table Design – Brainstorm potential idea of what each table might cons
 •	Timestamp
 •	(This table allows users to follow other users. No need for reciprocal entries as not all follows are mutual.)
 6.	Hashtags Table
-•	To speed things up we will create 2 tables to handle hashtags this article suggests it is fastest 
+•	To speed things up we will create 2 tables to handle hashtags this article suggests it is the fastest 
 http://howto.philippkeller.com/2005/06/19/Tagsystems-performance-tests/
-•	Doing this we reduce duplication 
+•	By Doing this we reduce duplication 
 •	We cam store more info about the tags like time.. 
 •	Photo_tags
 1.	Photo_id
