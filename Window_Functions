@@ -1,0 +1,143 @@
+-- Window functions
+
+CREATE DATABASE company_employees;
+USE company_employees;
+CREATE TABLE employees (
+    emp_no INT PRIMARY KEY AUTO_INCREMENT,
+    department VARCHAR(20),
+    salary INT
+);
+ 
+INSERT INTO employees (department, salary) VALUES
+('engineering', 80000),
+('engineering', 69000),
+('engineering', 70000),
+('engineering', 103000),
+('engineering', 67000),
+('engineering', 89000),
+('engineering', 91000),
+('sales', 59000),
+('sales', 70000),
+('sales', 159000),
+('sales', 72000),
+('sales', 60000),
+('sales', 61000),
+('sales', 61000),
+('customer service', 38000),
+('customer service', 45000),
+('customer service', 61000),
+('customer service', 40000),
+('customer service', 31000),
+('customer service', 56000),
+('customer service', 55000);
+ 
+-- Finding average salaries of whole company and comparing it against each salary
+SELECT emp_no, department, salary, AVG(salary) OVER() FROM employees;
+-- Over uses all the rows
+-- Finding min and max salary of entire table and comparing
+SELECT
+	emp_no,
+    department,
+    salary,
+    MIN(salary) OVER(),
+    MAX(salary) OVER()
+FROM employees;
+-- Finding average salaries of each department and comparing it against each salary PARTITIONING
+SELECT 
+	emp_no, 
+	department, 
+	salary, 
+	AVG(salary) OVER(PARTITION BY department) AS dep_avg, 
+	AVG(salary) OVER() AS company_avg
+FROM employees;
+-- counting employees per department
+SELECT emp_no, department, salary, COUNT(*) Over(partition BY department) AS dept_count
+FROM employees;
+-- Calculating payroll for each dept and comparing indv salary to each
+SELECT 
+	emp_no,
+    department,
+    salary,
+    SUM(salary) OVER (PARTITION BY department) AS dept_payroll,
+    SUM(salary) OVER() AS total_payroll
+FROM employees;
+
+-- ORDER BY with windows
+-- Compare the individual salary with the calculated rolling dept salary
+SELECT 
+	emp_no,
+    department,
+    salary,
+    SUM(salary) OVER(PARTITION BY department) AS total_dept_salary,
+    SUM(salary) OVER(PARTITION BY department ORDER BY salary DESC) AS rolling_dept_salary
+FROM employees;
+
+-- Exploring soley window functions 
+-- Ranking highest paid employees/salaries in our company
+SELECT 
+	emp_no,
+    department,
+    salary,
+    RANK() OVER(ORDER BY salary DESC) as overall_salary_rank
+FROM employees;
+
+-- Comparing ROW and RANK using salaries 
+SELECT
+	emp_no,
+    department,
+    salary,
+    ROW_NUMBER() OVER(PARTITION BY department ORDER BY salary DESC) as dept_salary_row,
+    RANK() OVER(PARTITION BY department ORDER BY salary DESC) as dept_salary_rank,
+    RANK() OVER(ORDER BY salary DESC) AS overall_salary_rank
+FROM employees ORDER BY department;
+-- No 'ties' when using row
+-- Can use DENSE_RANK to eliminate the skipping number function of rank ex.
+SELECT
+	emp_no,
+    department,
+    salary,
+    ROW_NUMBER() OVER(PARTITION BY department ORDER BY salary DESC) as dept_salary_row,
+    RANK() OVER(PARTITION BY department ORDER BY salary DESC) as dept_salary_rank,
+    RANK() OVER(ORDER BY salary DESC) AS overall_salary_rank,
+    DENSE_RANK() OVER(ORDER BY salary DESC) AS overall_salary_denserank
+FROM employees ORDER BY overall_salary_denserank;
+-- 8 is skipped in the overall_salary_rank list but not in the denserank
+
+-- NTILE using buckets to sort our values
+-- Could use this for calculating levels of pay within company Level 1 - 4
+SELECT 
+	emp_no,
+    department,
+    salary,
+    NTILE(4) OVER(ORDER BY salary DESC) AS salary_quartile
+FROM employees;
+-- Going further we can calculate levels within department and company
+SELECT 
+	emp_no,
+    department,
+    salary,
+    NTILE(4) OVER(PARTITION BY department ORDER BY salary DESC) AS dept_salary_qua,
+	NTILE(4) OVER(ORDER BY salary DESC) AS salary_quartile
+FROM employees;
+
+-- First_Value 
+-- using FIRST_VALUE to return employee number of highest paid employee each dept
+SELECT 
+	emp_no,
+    department,
+    salary,
+    FIRST_VALUE(emp_no) OVER(PARTITION BY department ORDER BY salary DESC) AS high_paid
+FROM employees;
+-- could use NTH_VALUE if we wanted to find 2nd, 3rd.... 
+
+-- Lag returns value of section from previous row
+-- Lead returns value of section from next row
+-- Could use if we want to calculate differences between rows
+SELECT 
+	emp_no,
+    department,
+    salary,
+    salary - LAG(salary) OVER(ORDER BY salary DESC) AS salary_dif
+    -- could do LAG(salary,2) for example if we wanted to find 2 places behind
+FROM employees;
+
