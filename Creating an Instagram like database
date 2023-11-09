@@ -73,7 +73,7 @@ http://howto.philippkeller.com/2005/06/19/Tagsystems-performance-tests/
 2.	Tag_name
 
 Step 5: Sketch out database table schemas to make things easier to look at:
- 
+![Database Schema](https://github.com/thoetz/Exploring_SQL/blob/20556876390b3651aed91f190d63bdf9797a7b87/IG_database_schema.png)
 
 
 Step 6: Data Types and Attributes
