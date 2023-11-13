@@ -1,6 +1,3 @@
-Certainly! Here's the updated content with comma-separated items converted into tables:
-
-```markdown
 # Questions
 
 1. **Objective:** Identify the first five users on our social media platform for the purpose of acknowledging and rewarding their long-standing contributions.
@@ -139,5 +136,3 @@ JOIN likes
 GROUP BY likes.user_id
 HAVING total = (SELECT COUNT(*) FROM photos);
 ```
-```
-
